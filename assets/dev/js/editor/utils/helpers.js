@@ -470,10 +470,14 @@ module.exports = {
 		} );
 	},
 
-	wpColorPicker( $element ) {
+	wpColorPicker( $element, options ) {
 		elementorCommon.helpers.deprecatedMethod( 'elementor.helpers.wpColorPicker()', '2.8.0', 'new ColorPicker()' );
 
-		return new ColorPicker( { picker: { el: $element } } );
+		options = options || {};
+
+		options.el = $element;
+
+		return new ColorPicker( options );
 	},
 
 	isInViewport( element, html ) {

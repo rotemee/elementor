@@ -11,43 +11,31 @@ export default class ColorPicker extends elementorModules.Module {
 
 	getDefaultSettings() {
 		return {
-			picker: {
-				theme: 'monolith',
-				position: 'bottom-' + ( elementorCommon.config.isRTL ? 'end' : 'start' ),
-				components: {
-					opacity: true,
-					hue: true,
-					interaction: {
-						input: true,
-						clear: true,
-					},
-				},
-				strings: {
-					clear: elementor.translate( 'clear' ),
+			theme: 'monolith',
+			swatches: this.getColorPickerPalette(),
+			position: 'bottom-' + ( elementorCommon.config.isRTL ? 'end' : 'start' ),
+			components: {
+				opacity: true,
+				hue: true,
+				interaction: {
+					input: true,
+					clear: true,
 				},
 			},
-			classes: {
-				swatchTool: 'elementor-color-picker__swatch-tool',
-				addSwatch: 'elementor-color-picker__add-swatch',
-				removeSwatch: 'elementor-color-picker__remove-swatch',
-				plusIcon: 'eicon-plus',
-				trashIcon: 'eicon-trash-o',
-			},
-			selectors: {
-				swatch: '.pcr-swatch',
-				activeSwatch: '.pcr-active',
+			strings: {
+				clear: elementor.translate( 'clear' ),
 			},
 		};
 	}
 
 	createPicker() {
-		const pickerSettings = this.getSettings( 'picker' );
+		const settings = this.getSettings();
 
-		pickerSettings.default = pickerSettings.default || null;
+		settings.default = settings.default || null;
 
-		this.picker = new Pickr( pickerSettings );
+		this.picker = new Pickr( settings );
 
-		if ( ! pickerSettings.default ) {
+		if ( ! settings.default ) {
 			// Set a default palette. It doesn't affect the selected value
 			this.picker.setColor( '#000' );
 		}
@@ -57,11 +45,11 @@ export default class ColorPicker extends elementorModules.Module {
 			.on( 'clear', ( ...args ) => this.onPickerClear( ...args ) )
 			.on( 'show', () => this.onPickerShow() );
 
+		this.draggableSwatches( this.getSwatches().children() );
+
 		this.addPlusButton();
 
-		this.addRemoveButton();
-
-		this.addToolsToSwatches();
+		this.addSwatchDroppingArea();
 	}
 
 	getValue() {
@@ -82,22 +70,8 @@ export default class ColorPicker extends elementorModules.Module {
 		return jQuery( this.picker.getRoot().swatches );
 	}
 
-	addSwatch( color ) {
-		this.picker.addSwatch( color );
-	}
-
-	addSwatches() {
-		this.getSwatches().children( this.getSettings( 'selectors.swatch' ) ).remove();
-
-		this.getColorPickerPalette().forEach( ( swatch ) => this.addSwatch( swatch ) );
-
-		this.addToolsToSwatches();
-	}
-
 	addPlusButton() {
-		const { classes } = this.getSettings();
-
-		this.$addButton = jQuery( '<button>', { class: classes.swatchTool + ' ' + classes.addSwatch } ).html( jQuery( '<i>', { class: classes.plusIcon } ) );
+		this.$addButton = jQuery( '<button>', { class: 'elementor-color-picker--add-swatch' } ).html( jQuery( '<i>', { class: 'eicon-plus' } ) );
 
 		this.$addButton.on( 'click', () => this.onAddButtonClick() );
 
@@ -105,35 +79,36 @@ export default class ColorPicker extends elementorModules.Module {
 			title: () => elementor.translate( 'add_picked_color' ),
 			gravity: () => 's',
 		} );
+
+		this.addPlusButtonToSwatches();
 	}
 
-	addRemoveButton() {
-		const { classes } = this.getSettings();
+	addSwatchDroppingArea() {
+		this.$droppingArea = jQuery( '<div>', { class: 'elementor-color-picker--dropping-area' } ).html( jQuery( '<i>', { class: 'eicon-trash-o' } ) );
 
-		this.$removeButton = jQuery( '<button>', { class: classes.swatchTool + ' ' + classes.removeSwatch } ).html( jQuery( '<i>', { class: classes.trashIcon } ) );
+		this.getSwatches().after( this.$droppingArea );
 
-		this.$removeButton.on( 'click', () => this.onRemoveButtonClick() );
-
-		this.$removeButton.tipsy( {
-			title: () => elementor.translate( 'remove_color' ),
-			gravity: () => 's',
+		this.$droppingArea.html5Droppable( {
+			items: '',
+			onDropping: this.onDroppingAreaDropping.bind( this ),
 		} );
 	}
 
-	addToolsToSwatches() {
-		this.getSwatches().append( this.$addButton, this.$removeButton );
+	addPlusButtonToSwatches() {
+		this.getSwatches().append( this.$addButton );
+	}
 
-		this.picker.activateSwatch();
+	draggableSwatches( $swatches ) {
+		$swatches.html5Draggable( {
+			onDragStart: this.onSwatchDragStart.bind( this ),
+			onDragEnd: this.onSwatchDragEnd.bind( this ),
+		} );
 	}
 
 	destroy() {
 		this.picker.destroyAndRemove();
-	}
 
-	fixTipsyForFF( $button ) {
-		// There's a bug in FireFox about hiding the tooltip after the button was clicked,
-		// So let's force it to hide
-		$button.data( 'tipsy' ).hide();
+		ColorPicker.swachesNeedUpdate = false;
 	}
 
 	onPickerChange( ...args ) {
@@ -155,7 +130,15 @@ export default class ColorPicker extends elementorModules.Module {
 	}
 
 	onPickerShow() {
-		this.addSwatches();
+		if ( ColorPicker.swachesNeedUpdate ) {
+			this.getSwatches().children( '.pcr-swatch' ).remove();
+
+			this.getColorPickerPalette().forEach( ( swatch ) => this.picker.addSwatch( swatch ) );
+
+			this.addPlusButtonToSwatches();
+
+			this.picker.activateSwatch();
+		}
 
 		const { result: resultInput } = this.picker.getRoot().interaction;
 
@@ -169,26 +152,52 @@ export default class ColorPicker extends elementorModules.Module {
 	onAddButtonClick() {
 		const value = this.getValue();
 
-		this.addSwatch( value );
+		this.picker.addSwatch( value );
 
-		this.addToolsToSwatches();
+		this.draggableSwatches( this.getSwatches().children().last() );
+
+		this.addPlusButtonToSwatches();
 
 		elementor.schemes.addSchemeItem( 'color-picker', { value } );
 
 		elementor.schemes.saveScheme( 'color-picker' );
 
-		this.fixTipsyForFF( this.$addButton );
+		ColorPicker.swachesNeedUpdate = true;
+
+		// There's a bug in FireFox about hiding the tooltip after the `$addButton` was clicked,
+		// So let's force it to hide
+		const tipsyInstance = this.$addButton.data( 'tipsy' );
+
+		tipsyInstance.hide();
 	}
 
-	onRemoveButtonClick() {
-		const swatchIndex = jQuery( this.getSwatches().children( this.getSettings( 'selectors.activeSwatch' ) ) ).index();
+	onSwatchDragStart( event ) {
+		this.$droppingArea.slideDown();
 
-		elementor.schemes.removeSchemeItem( 'color-picker', swatchIndex );
+		this.$draggedSwatch = jQuery( event.target );
+
+		setTimeout( () => this.$draggedSwatch.addClass( 'elementor-hidden' ), 0 );
+	}
+
+	onSwatchDragEnd( event ) {
+		this.$droppingArea.slideUp();
+
+		jQuery( event.target ).removeClass( 'elementor-hidden' );
+	}
+
+	onDroppingAreaDropping() {
+		this.$droppingArea.slideUp();
+
+		const draggedSwatchIndex = this.$draggedSwatch.index();
+
+		elementor.schemes.removeSchemeItem( 'color-picker', draggedSwatchIndex );
 
 		elementor.schemes.saveScheme( 'color-picker' );
 
-		this.picker.removeSwatch( swatchIndex );
+		this.picker.removeSwatch( draggedSwatchIndex );
 
-		this.fixTipsyForFF( this.$removeButton );
+		ColorPicker.swachesNeedUpdate = true;
 	}
 }
+
+ColorPicker.swachesNeedUpdate = false;

@@ -1,12 +1,12 @@
 .elementor-color-picker {
 
-	&__swatch-tool {
+	&--add-swatch {
 		position: relative;
 		padding-bottom: 100%;
-		cursor: pointer;
+		background-color: #fff;
 		box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.15);
 		border-radius: 3px;
-		background-color: #fff;
+		cursor: pointer;
 
 		i {
 			position: absolute;
@@ -18,21 +18,34 @@
 		}
 	}
 
-	&__remove-swatch {
+	&--dropping-area {
+		margin-top: 10px;
+		padding: 15px;
+		border: 1px dashed $editor-lightest;
+		text-align: center;
 		display: none;
+
+		&.html5dnd-current-element {
+			border-color: $editor-light;
+
+			i {
+				color: $editor-warning;
+			}
+		}
+
+		i {
+			color: $editor-dark;
+			font-size: 15px;
+		}
 	}
 }
 
-.pcr-swatch {
+.pcr-swatch.pcr-active ~ .elementor-color-picker--add-swatch {
+	background-color: $editor-lighter;
+	box-shadow: none;
+	pointer-events: none;
 
-	&.pcr-active {
-
-		~ .elementor-color-picker__add-swatch {
-			display: none;
-		}
-
-		~ .elementor-color-picker__remove-swatch {
-			display: block;
-		}
+	i {
+		color: #fff;
 	}
 }

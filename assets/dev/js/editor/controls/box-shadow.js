@@ -44,10 +44,8 @@ ControlBoxShadowItemView = ControlMultipleBaseItemView.extend( {
 
 	initColors: function() {
 		this.colorPicker = new ColorPicker( {
-			picker: {
-				el: this.ui.colorPickerPlaceholder[ 0 ],
-				default: this.getControlValue( 'color' ),
-			},
+			el: this.ui.colorPickerPlaceholder[ 0 ],
+			default: this.getControlValue( 'color' ),
 			onChange: () => {
 				this.setValue( 'color', this.colorPicker.getValue() );
 			},

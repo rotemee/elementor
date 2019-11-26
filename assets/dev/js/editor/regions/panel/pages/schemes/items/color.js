@@ -16,10 +16,8 @@ module.exports = PanelSchemeItemView.extend( {
 
 	onRender: function() {
 		this.colorPicker = new ColorPicker( {
-			picker: {
-				el: this.ui.pickerPlaceholder[ 0 ],
-				default: this.model.get( 'value' ),
-			},
+			el: this.ui.pickerPlaceholder[ 0 ],
+			default: this.model.get( 'value' ),
 			onChange: () => {
 				this.triggerMethod( 'value:change', this.colorPicker.getValue() );
 			},

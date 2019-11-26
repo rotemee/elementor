@@ -20,15 +20,13 @@ export default class extends ControlBaseDataView {
 
 	initPicker() {
 		const options = {
-			picker: {
-				el: this.ui.pickerContainer[ 0 ],
-				default: this.getControlValue(),
-				components: {
-					opacity: this.model.get( 'alpha' ),
-				},
-			},
+			el: this.ui.pickerContainer[ 0 ],
+			default: this.getControlValue(),
 			onChange: () => this.onPickerChange(),
 			onClear: () => this.onPickerClear(),
+			components: {
+				opacity: this.model.get( 'alpha' ),
+			},
 		};
 
 		this.colorPicker = new ColorPicker( options );
