@@ -41,12 +41,67 @@ class Widget_Test extends Widget_Base {
 		);
 
 		$this->add_control(
-			'url',
+			'h1',
 			[
-				'label' => __( 'URL to embed', 'elementor' ),
-				'type' => Controls_Manager::TEXT,
-				'input_type' => 'url',
-				'placeholder' => __( 'https://your-link.com', 'elementor' ),
+				'label' => __( 'H1 Content', 'elementor' ),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'placeholder' => __( 'Type in H1 Content', 'elementor' ),
+			]
+		);
+
+		$this->add_control(
+			'h1-color',
+			[
+				'label' => __( 'H1 Color', 'elementor' ),
+				'type' => \Elementor\Controls_Manager::COLOR
+			]
+		);
+
+		$this->add_control(
+			'p',
+			[
+				'label' => __( 'P Content', 'elementor' ),
+				'type' => \Elementor\Controls_Manager::TEXT,
+				'placeholder' => __( 'Type in P Content', 'elementor' ),
+			]
+		);
+
+		$this->add_control(
+			'p-color',
+			[
+				'label' => __( 'P Color', 'elementor' ),
+				'type' => \Elementor\Controls_Manager::COLOR
+			]
+		);
+
+		$this->add_control(
+			'more_options',
+			[
+				'label' => __( 'Additional Options', 'elementor' ),
+				'type' => \Elementor\Controls_Manager::HEADING,
+				'separator' => 'before',
+			]
+		);
+
+		$this->add_control(
+			'important_note',
+			[
+				'label' => __( 'Important Note', 'plugin-name' ),
+				'type' => \Elementor\Controls_Manager::RAW_HTML,
+				'raw' => __( 'A very important message to show in the panel.', 'plugin-name' ),
+				'content_classes' => 'your-class',
+			]
+		);
+
+		$this->add_control(
+			'delete_content',
+			[
+				'label' => __( 'Delete Content', 'elementor' ),
+				'type' => \Elementor\Controls_Manager::BUTTON,
+				'separator' => 'before',
+				'button_type' => 'success',
+				'text' => __( 'Delete', 'elementor' ),
+				'event' => 'namespace:editor:delete',
 			]
 		);
 
@@ -64,11 +119,13 @@ class Widget_Test extends Widget_Base {
 	protected function render() {
 		$settings = $this->get_settings_for_display();
 
-		$html = wp_oembed_get( $settings['url'] );
+		echo '<div class="test-widget">';
 
-		echo '<div class="oembed-elementor-widget">';
-
-		echo ( $html ) ? $html : $settings['url'];
+		echo '<h1 style="color: '. $settings['h1-color'] .'">' . $settings['h1'] . '</h1>';
+		?>
+		<hr>
+		<?php
+		echo '<p style="color: '. $settings['p-color'] .'">' . $settings['p'] . '</p>';
 
 		echo '</div>';
 	}
