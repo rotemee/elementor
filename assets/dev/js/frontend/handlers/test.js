@@ -22,6 +22,14 @@ class Test extends elementorModules.frontend.handlers.Base {
 	onClick() {
 		alert( 'click' );
 	}
+
+	onInit() {
+		super.onInit();
+
+		this.elements.$h1.css('opacity', '0.5');
+
+		console.log( 'init - elementorFrontend: ', elementorFrontend );
+	}
 }
 
 export default ( $scope ) => {
