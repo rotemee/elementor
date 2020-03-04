@@ -3,23 +3,24 @@ class Test extends elementorModules.frontend.handlers.Base {
 		return {
 			selectors: {
 				h1: '.test-h1',
-				p: 'test-p',
 			},
 		};
 	}
 
 	getDefaultElements() {
 		const selectors = this.getSettings( 'selectors' );
+		console.log( 'h1', selectors.h1 );
 		return {
 			$h1: this.$element.find( selectors.h1 ),
-			$p: this.$element.find( selectors.p ),
 		};
 	}
 
-	onInit() {
-		super.onInit();
+	bindEvents() {
+		this.elements.$h1.on( 'click', () => this.onClick() );
+	}
 
-		console.log('Test class - elementorFrontend: ', elementorFrontend);
+	onClick() {
+		alert( 'click' );
 	}
 }
 

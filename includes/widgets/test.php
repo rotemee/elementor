@@ -50,7 +50,7 @@ class Widget_Test extends Widget_Base {
 		);
 
 		$this->add_control(
-			'h1_color',
+			'h1-color',
 			[
 				'label' => __( 'H1 Color', 'elementor' ),
 				'type' => \Elementor\Controls_Manager::COLOR
@@ -67,7 +67,7 @@ class Widget_Test extends Widget_Base {
 		);
 
 		$this->add_control(
-			'p_color',
+			'p-color',
 			[
 				'label' => __( 'P Color', 'elementor' ),
 				'type' => \Elementor\Controls_Manager::COLOR
@@ -120,8 +120,8 @@ class Widget_Test extends Widget_Base {
 		$settings = $this->get_settings_for_display();
 		?>
 		<div class="test-widget">
-			<p style="color: <?php echo $settings['h1_color']; ?>"><?php echo $settings['h1']; ?></p>
-			<p style="color: <?php echo $settings['p_color']; ?>"><?php echo $settings['p']; ?></p>
+			<h1 class="test-h1" style="color: <?php echo $settings['h1-color']; ?>"><?php echo $settings['h1']; ?></h1>
+			<p class="test-p" style="color: <?php echo $settings['p-color']; ?>"><?php echo $settings['p']; ?></p>
 		</div>
 		<?php
 	}
@@ -130,11 +130,10 @@ class Widget_Test extends Widget_Base {
 		?>
 		<#
 			console.log('RENDER: content_template');
-			const prefix = 'PREFIX!';
 		#>
-		<div class="test-widget">
-			<h1 class="test-h1" style="color: {{{ settings.h1_color }}}">{{{ settings.h1 }}}</h1>
-			<p class="test-p" style="color: {{{ settings.p_color }}}">{{{ settings.p }}}</p>
+		<div class="test-widget editor">
+			<h1 class="test-h1" style="color: {{ settings['h1-color'] }}">{{ settings.h1 }}</h1>
+			<p class="test-p" style="color: {{ settings['p-color'] }}">{{ settings.p }}</p>
 		</div>
 		<?php
 	}
