@@ -5,3 +5,11 @@
 .test-widget {
 	background: lightgreen;
 }
+
+.test-widget * {
+	transition: all 1s linear;
+}
+
+.test-widget .water {
+	opacity: 0.5;
+}

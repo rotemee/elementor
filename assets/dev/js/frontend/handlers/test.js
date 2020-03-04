@@ -26,7 +26,7 @@ class Test extends elementorModules.frontend.handlers.Base {
 	onInit() {
 		super.onInit();
 
-		this.elements.$h1.css('opacity', '0.5');
+		this.elements.$h1.addClass( 'water' );
 
 		console.log( 'init - elementorFrontend: ', elementorFrontend );
 	}
