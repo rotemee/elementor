@@ -10,6 +10,7 @@ import textEditorHandler from './handlers/text-editor';
 import sectionHandler from './handlers/section/section';
 import columnHandler from './handlers/column';
 import globalHandler from './handlers/global';
+import testHandler from './handlers/test';
 
 module.exports = function( $ ) {
 	const self = this;
@@ -30,6 +31,7 @@ module.exports = function( $ ) {
 		'video.default': videoHandler,
 		'image-carousel.default': imageCarouselHandler,
 		'text-editor.default': textEditorHandler,
+		'test.default': testHandler,
 	};
 
 	const handlersInstances = {};
