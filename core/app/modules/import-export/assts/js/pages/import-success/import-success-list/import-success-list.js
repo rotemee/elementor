@@ -13,7 +13,7 @@ export default function ImportSuccessList() {
 			{
 				importSuccessContent.map( ( item, index ) => (
 					<List.Item key={ index } className="import-success-list__item">
-						<Grid container justify="space-between" className="import-success-list__item">
+						<Grid container justify="space-between">
 							<Grid item>
 								<strong className="import-success-list__title">{ item.data.title }:</strong>
 								<span>{ item.data.items.join( ' | ' ) }</span>
