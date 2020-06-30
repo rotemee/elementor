@@ -1,14 +1,22 @@
 import Layout from '../../templates/layout';
 import ImportContentList from './import-content-list/import-content-list';
+import Heading from '../../ui/heading/heading';
+import MainFooter from '../../shared/main-footer/main-footer';
+import Button from 'elementor-app/ui/molecules/button';
 
 export default function ImportContent() {
 	return (
 		<Layout type="import">
-			<section className="elementor-app__import-export import-content">
-				<h1>
+			<section className="e-app-import-content">
+				<Heading size="md">
 					{ __( 'Choose The Contents to Include in Your Site', 'elementor' ) }
-				</h1>
+				</Heading>
+
 				<ImportContentList />
+
+				<MainFooter>
+					<Button text={ __( 'Import', 'elementor' ) } url="/import/process" />
+				</MainFooter>
 			</section>
 		</Layout>
 	);

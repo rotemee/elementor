@@ -1,29 +1,18 @@
 import { Context as ImportContext } from '../../../context/import';
-
-import List from '../../../ui/list/list';
-import ListItem from '../../../ui/list/list-item';
-import ListItemText from '../../../ui/list/list-item-text';
-import Checkbox from '../../../ui/checkbox/checkbox';
-import Box from '../../../ui/box/box';
-
-import Button from 'elementor-app/ui/molecules/button';
+import KitContentList from '../../../shared/kit-content-list/kit-content-list';
 
 export default function ImportContentList() {
 	const { importContent } = React.useContext( ImportContext );
 
-	return (
-		<List className="import-content-list">
-			{
-				importContent.map( ( item, index ) => (
-					<ListItem key={ index } className="import-content-list__item">
-						<div className="row">
-							<Checkbox />
-							<ListItemText primary={ item.title } secondary={ item.description } />
-						</div>
-						{ item.notice ? <Box type="notice">{ item.notice }</Box> : null }
-					</ListItem>
-				) )
-			}
-		</List>
-	);
+	return <KitContentList content={ importContent } />;
 }
+
+ImportContentList.propTypes = {
+	classname: PropTypes.string,
+	content: PropTypes.array,
+};
+
+ImportContentList.defaultProps = {
+	className: '',
+};
+

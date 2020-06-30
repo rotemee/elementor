@@ -11,17 +11,49 @@ class ImportContext extends React.Component {
 		this.state = {
 			importContent: [
 				{
-					title: 'Global Templates',
-					description: 'Saved Templates, Site Parts, Popups, Global Widgets',
-					notice: 'Site Parts, Global widgets and Popups will are available only when Elementor Pro license is Connected',
+					type: 'templates',
+					data: {
+						title: 'Global Templates',
+						description: 'Saved Templates, Site Parts, Popups, Global Widgets',
+						notice: 'Site Parts, Global widgets and Popups will are available only when Elementor Pro license is Connected',
+					},
 				},
 				{
-					title: 'Global Styles And Settings',
-					description: 'Theme Style, Global Colors and Typography, Layout, Lightbox and Site Identity settings',
+					type: 'styles',
+					data: {
+						title: 'Global Styles And Settings',
+						description: 'Theme Style, Global Colors and Typography, Layout, Lightbox and Site Identity settings',
+					},
 				},
 				{
-					title: 'Content',
-					description: 'Published pages, posts, related taxonomies, menu and custom post types.',
+					type: 'content',
+					data: {
+						title: 'Content',
+						description: 'Published pages, posts, related taxonomies, menu and custom post types.',
+					},
+				},
+			],
+			importSuccessContent: [
+				{
+					type: 'templates',
+					data: {
+						title: 'Global Templates',
+						items: [ '4 Headers', '3 Footers', '2 Posts', '1 Product' ],
+					},
+				},
+				{
+					type: 'styles',
+					data: {
+						title: 'Styles and Settings',
+						items: [ 'Colors', 'Typography', 'Site Layout' ],
+					},
+				},
+				{
+					type: 'content',
+					data: {
+						title: 'Content',
+						items: [ 'Pages', 'Posts', 'Menu' ],
+					},
 				},
 			],
 		};

@@ -1,11 +1,9 @@
-import './checkbox.scss';
-
 export default function Checkbox( props ) {
 	return (
 		<input
 			type="checkbox"
 			disabled={ props.disabled }
-			className={ `import-export__checkbox ${ props.className }` }
+			className={ `eps-checkbox ${ props.className }` }
 		/>
 	);
 }

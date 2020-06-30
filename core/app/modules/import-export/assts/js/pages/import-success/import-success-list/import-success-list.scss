@@ -1,0 +1,14 @@
+.import-success-list {
+	&__item {
+		border-top: 1px solid tints(800);
+		padding: spacing(10) 0;
+
+		&:last-child {
+			border-bottom: 1px solid tints(800);
+		}
+	}
+
+	&__title {
+		margin-inline-end: spacing(12);
+	}
+}

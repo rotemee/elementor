@@ -1,7 +1,8 @@
 import Layout from '../../templates/layout';
-import ExportContentList from './export-content-list/export-content-list';
+import Heading from '../../ui/heading/heading';
 import Box from '../../ui/box/box';
-import Footer from '../../ui/footer/footer';
+import ExportContentList from './export-content-list/export-content-list';
+import MainFooter from '../../shared/main-footer/main-footer';
 import Button from 'elementor-app/ui/molecules/button';
 
 import '../import-export.scss';
@@ -10,24 +11,26 @@ import './export.scss';
 export default function Export() {
 	return (
 		<Layout type="export">
-			<section className="elementor-app__import-export export">
-				<div className="export__kit-name">
-					<h1>
+			<section className="e-app-export">
+				<div className="e-app-export__kit-name">
+					<Heading size="lg">
 						{ __( 'Kit Name', 'elementor' ) }
-					</h1>
+					</Heading>
 					<Box>
 						<input type="text" defaultValue="Elementor cloud site" />
 					</Box>
 				</div>
 
-				<div className="export__kit-content">
-					<h1>{ __( 'Choose What To Include In The Kit', 'elementor' ) }</h1>
+				<div className="e-app-export__kit-content">
+					<Heading size="lg">
+						{ __( 'Choose What To Include In The Kit', 'elementor' ) }
+					</Heading>
 					<ExportContentList />
 				</div>
 
-				<Footer>
-					<Button text={ __( 'Next', 'elementor' ) } url="/export/success" />
-				</Footer>
+				<MainFooter>
+					<Button size="lg" variant="primary" text={ __( 'Next', 'elementor' ) } url="/export/success" />
+				</MainFooter>
 			</section>
 		</Layout>
 	);

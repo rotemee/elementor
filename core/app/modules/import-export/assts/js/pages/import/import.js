@@ -1,5 +1,7 @@
 import Layout from '../../templates/layout';
 import Message from '../../ui/message/message';
+import Heading from '../../ui/heading/heading';
+import Text from '../../ui/text/text';
 import Box from '../../ui/box/box';
 import Button from 'elementor-app/ui/molecules/button';
 
@@ -8,18 +10,18 @@ import './import.scss';
 export default function Import() {
 	return (
 		<Layout type="import">
-			<section className="elementor-app__import-export import">
-				<Message className="import__select-file">
-					<h1>
+			<section className="e-app-import">
+				<Message className="e-app-import__select-file">
+					<Heading size="lg">
 						{ __( 'Import a Kit to Your Site', 'elementor' ) }
-					</h1>
-					<h3>
+					</Heading>
+					<Text size="md">
 						{ __( 'Drag & Drop your zip template file', 'elementor' ) }
-					</h3>
-					<p>
+					</Text>
+					<Text size="sm">
 						{ __( 'Or', 'elementor' ) }
-					</p>
-					<Button text={ __( 'Select File', 'elementor' ) } url="/#" />
+					</Text>
+					<Button variant="primary" text={ __( 'Select File', 'elementor' ) } url="/#" />
 				</Message>
 
 				<Box type="notice">

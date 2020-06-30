@@ -1,7 +1,11 @@
-.import-export__message {
+.import-export-message {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
 	justify-content: center;
 	height: 100%;
+
+	&__content {
+		text-align: center;
+	}
 }

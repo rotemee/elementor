@@ -9,18 +9,32 @@ class ExportContext extends React.Component {
 		super( props );
 
 		this.state = {
-			kitContent: [
+			exportContent: [
 				{
-					title: 'Global Templates',
-					description: 'Saved Templates, Site Parts, Popups, Global Widgets',
+					type: 'templates',
+					data: {
+						title: 'Global Templates',
+						description: 'Saved Templates, Site Parts, Popups, Global Widgets',
+						isProNeeded: true,
+						select: [
+							'Item 1',
+							'Item 2',
+						],
+					},
 				},
 				{
-					title: 'Global Styles And Settings',
-					description: 'Theme Style, Global Colors and Typography, Layout, Lightbox and Site Identity settings',
+					type: 'styles',
+					data: {
+						title: 'Global Styles And Settings',
+						description: 'Theme Style, Global Colors and Typography, Layout, Lightbox and Site Identity settings',
+					},
 				},
 				{
-					title: 'Content',
-					description: 'Published pages, posts, related taxonomies, menu and custom post types.',
+					type: 'content',
+					data: {
+						title: 'Content',
+						description: 'Published pages, posts, related taxonomies, menu and custom post types.',
+					},
 				},
 			],
 		};
