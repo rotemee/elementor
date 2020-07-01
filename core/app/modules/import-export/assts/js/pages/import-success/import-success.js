@@ -16,7 +16,7 @@ export default function ImportSuccess() {
 				<ImportSuccessList />
 
 				<Grid container justify="center">
-					<Button text={ __( 'View live Site', 'elementor' ) } className="import-success__button success-button" url="/#"/>
+					<Button variant="primary" text={ __( 'View live Site', 'elementor' ) } url="/#"/>
 				</Grid>
 			</Message>
 		</Layout>
