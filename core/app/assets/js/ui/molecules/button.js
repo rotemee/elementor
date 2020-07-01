@@ -56,8 +56,6 @@ export default class Button extends React.Component {
 			}
 		} );
 
-		console.log( 'stylePropClasses', stylePropClasses );
-
 		return stylePropClasses;
 	}
 
