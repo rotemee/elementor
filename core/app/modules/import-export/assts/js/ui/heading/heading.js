@@ -6,7 +6,7 @@ export default function Heading( props ) {
 			baseClassName,
 			props.className,
 		],
-		tagName = props.variant || 'h1';
+		tagName = props.tag || 'h1';
 
 	if ( props.size ) {
 		classes.push( baseClassName + '--' + props.size );
