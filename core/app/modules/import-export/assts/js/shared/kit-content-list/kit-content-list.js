@@ -2,30 +2,34 @@ import List from '../../ui/list/list';
 import Grid from '../../ui/grid/grid';
 import Text from '../../ui/text/text';
 import Box from '../../ui/box/box';
+import KitContentSelect from './kit-content-select/kit-content-select';
 import Checkbox from 'elementor-app/ui/atoms/checkbox';
 import Button from 'elementor-app/ui/molecules/button';
 
 import './kit-content-list.scss';
 
 export default function KitContentList( props ) {
-	const getButton = ( isProNeeded ) => {
-			if ( ! isProNeeded ) {
+	const getButton = () => (
+			<Grid item>
+				<Button variant="cta" text={ __( 'Lear More', 'elementor' ) } url="/#" />
+			</Grid>
+		),
+		getNotice = ( notice ) => (
+			<Box type="notice" className="">
+				<Text size="sm">
+					{ notice }
+				</Text>
+			</Box>
+		),
+		getContentSelection = ( item ) => {
+			if ( 'content' !== item.type || 'export' !== props.type ) {
 				return;
 			}
 
 			return (
-				<Grid item>
-					<Button variant="cta" text={ __( 'Lear More', 'elementor' ) } url="/#" />
+				<Grid container justify="center" className="kit-content-selection-container">
+					<KitContentSelect options={ item.data.contentSelection } />
 				</Grid>
-			);
-		},
-		getDescriptionLink = ( isProNeeded ) => {
-			if ( ! isProNeeded ) {
-				return;
-			}
-
-			return (
-				<Button color="cta" text={ __( 'Pro Features', 'elementor' ) } url="/#" />
 			);
 		};
 
@@ -44,15 +48,17 @@ export default function KitContentList( props ) {
 
 										<Grid item>
 											<Text size="sm" tag="span" className="kit-content-list__description">{ item.data.description }</Text>
-											{ getDescriptionLink( item.data.notice ) }
+											{ item.data.notice ? <Button color="cta" text={ __( 'Pro Features', 'elementor' ) } url="/#" /> : null }
 										</Grid>
 									</Grid>
 								</Grid>
 
-								{ item.data.notice ? <Box type="notice">{ item.data.notice }</Box> : null }
+								{ item.data.notice ? getNotice( item.data.notice ) : null }
 							</Grid>
 
-							{ getButton( item.data.notice ) }
+							{ item.data.notice ? getButton() : null }
+
+							{ getContentSelection( item ) }
 						</Grid>
 					</List.Item>
 				) )
@@ -63,6 +69,7 @@ export default function KitContentList( props ) {
 
 KitContentList.propTypes = {
 	classname: PropTypes.string,
+	type: PropTypes.string.isRequired,
 	content: PropTypes.array,
 };
 

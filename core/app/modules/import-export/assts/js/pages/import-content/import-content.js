@@ -15,7 +15,7 @@ export default function ImportContent() {
 				<ImportContentList />
 
 				<MainFooter>
-					<Button text={ __( 'Import', 'elementor' ) } url="/import/process" />
+					<Button variant="primary" text={ __( 'Import', 'elementor' ) } url="/import/process" />
 				</MainFooter>
 			</section>
 		</Layout>

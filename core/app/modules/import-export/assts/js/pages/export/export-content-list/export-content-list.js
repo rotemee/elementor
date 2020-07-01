@@ -4,7 +4,7 @@ import KitContentList from '../../../shared/kit-content-list/kit-content-list';
 export default function ExportContentList() {
 	const { exportContent } = React.useContext( ExportContext );
 
-	return <KitContentList content={ exportContent } />;
+	return <KitContentList type="export" content={ exportContent } />;
 }
 
 ExportContentList.propTypes = {

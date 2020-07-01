@@ -11,24 +11,22 @@ import './import-process.scss';
 export default function ImportProcess() {
 	return (
 		<Layout type="import">
-			<section className="e-app-import-process">
-				<Message>
-					<Heading size="lg">
-						{ __( 'Your Kit Is Being Imported', 'elementor' ) }
-					</Heading>
-					<Text size="md">
-						{ __( 'This may take a few moments to complete.\nPlease don’t close this window until importing is completed', 'elementor' ) }
-					</Text>
-				</Message>
+			<Message className="e-app-import-process">
+				<Heading size="lg">
+					{ __( 'Your Kit Is Being Imported', 'elementor' ) }
+				</Heading>
+				<Text size="md">
+					{ __( 'This may take a few moments to complete.\nPlease don’t close this window until importing is completed', 'elementor' ) }
+				</Text>
 
 				<Box className="e-app-import-process__box">
 					{ __( 'Importing global templates', 'elementor' ) }
 				</Box>
 
 				<MainFooter>
-					<Button text={ __( 'Cancel', 'elementor' ) } url="/import/process" />
+					<Button variant="disabled" text={ __( 'Cancel', 'elementor' ) } url="/import/process" />
 				</MainFooter>
-			</section>
+			</Message>
 		</Layout>
 	);
 }

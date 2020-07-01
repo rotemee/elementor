@@ -9,6 +9,11 @@
 		border-left: 2px solid theme-colors(warning);
 		color: tints(500);
 		font-style: italic;
+
+		* {
+			margin: 0;
+			padding: 0;
+		}
 	}
 
 	input {

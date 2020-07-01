@@ -21,12 +21,15 @@ export default function Import() {
 						<Heading size="lg">
 							{ __( 'Import a Kit to Your Site', 'elementor' ) }
 						</Heading>
+
 						<Text size="md">
 							{ __( 'Drag & Drop your zip template file', 'elementor' ) }
 						</Text>
+
 						<Text size="sm">
 							{ __( 'Or', 'elementor' ) }
 						</Text>
+
 						<Button variant="primary" text={ __( 'Select File', 'elementor' ) } url="/#" />
 					</Message>
 				</DragDrop>
