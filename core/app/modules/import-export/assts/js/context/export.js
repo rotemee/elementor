@@ -20,6 +20,7 @@ class ExportContext extends React.Component {
 							'Item 1',
 							'Item 2',
 						],
+						notice: 'Site Parts, Global widgets and Popups will are available only when Elementor Pro license is Connected',
 					},
 				},
 				{
@@ -34,6 +35,11 @@ class ExportContext extends React.Component {
 					data: {
 						title: 'Content',
 						description: 'Published pages, posts, related taxonomies, menu and custom post types.',
+						contentSelection: [
+							'Option 1',
+							'Option 2',
+							'Option 3',
+						],
 					},
 				},
 			],
