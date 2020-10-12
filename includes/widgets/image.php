@@ -837,4 +837,15 @@ class Widget_Image extends Widget_Base {
 			'url' => $settings['image']['url'],
 		];
 	}
+
+	public function get_dependencies() {
+		return [
+			//'swiper' => [],
+			'elementor-gallery' => [
+				'link_to' => 'rotem',
+				'open_lightbox' => 'yes',
+				'image_size' => 'rotem2',
+			],
+		];
+	}
 }

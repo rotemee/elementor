@@ -227,6 +227,7 @@ class Frontend extends App {
 		// Priority 7 to allow google fonts in header template to load in <head> tag
 		add_action( 'wp_head', [ $this, 'print_fonts_links' ], 7 );
 		add_action( 'wp_head', [ $this, 'add_theme_color_meta_tag' ] );
+		// rotem - start point - level1
 		add_action( 'wp_footer', [ $this, 'wp_footer' ] );
 	}
 
@@ -433,6 +434,7 @@ class Frontend extends App {
 			true
 		);
 
+		// rotem - base start point
 		wp_register_script(
 			'elementor-frontend',
 			$this->get_js_assets_url( 'frontend' ),
@@ -583,6 +585,7 @@ class Frontend extends App {
 		 */
 		do_action( 'elementor/frontend/before_enqueue_scripts' );
 
+		// rotem: main spot! >> triggers the scripts
 		wp_enqueue_script( 'elementor-frontend' );
 
 		$this->print_config();
@@ -653,12 +656,14 @@ class Frontend extends App {
 	 * @access public
 	 */
 	public function wp_footer() {
+		// rotem - preventing from assets to be loaded when there are no elements on the page
 		if ( ! $this->_has_elementor_in_page ) {
 			return;
 		}
 
 		$this->enqueue_styles();
-		$this->enqueue_scripts();
+		// rotem - start point - level2 - remove comment below + test script: wp_enqueue_script( 'swiper' );
+		//$this->enqueue_scripts();
 
 		$this->print_fonts_links();
 	}

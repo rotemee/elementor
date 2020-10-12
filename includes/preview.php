@@ -324,10 +324,12 @@ class Preview extends App {
 	 * @access public
 	 */
 	public function wp_footer() {
+		// rotem: not clear when this function is triggered
 		$frontend = Plugin::$instance->frontend;
 		if ( $frontend->has_elementor_in_page() ) {
 			// Has header/footer/widget-template - enqueue all style/scripts/fonts.
-			$frontend->wp_footer();
+			// rotem
+			//$frontend->wp_footer();
 		} else {
 			// Enqueue only scripts.
 			$frontend->enqueue_scripts();

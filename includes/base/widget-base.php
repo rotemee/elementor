@@ -551,10 +551,62 @@ abstract class Widget_Base extends Element_Base {
 			 */
 			$widget_content = apply_filters( 'elementor/widget/render_content', $widget_content, $this );
 
+			$this->trigger_widget_dependencies( $this->get_name() );
+
 			echo $widget_content; // XSS ok.
 			?>
 		</div>
 		<?php
+	}
+
+	private function trigger_widget_dependencies( $widget_name ) {
+		// TODO: add a global state that keep the data that a certain widget already got the needed dependencies.
+		/*
+		 * For example: an array that saves the 'image' widget name, and then on the next time that an image widget will be loaded,
+		 * It will see that the widget name is already exist in the array and will not perform the following functionality below.
+		 * If so: return here!.
+		 */
+
+		/*
+		$widgets_dependencies = [
+			'image' => [
+				'swiper' => [],
+				'elementor-gallery' => [
+					'link_to' => 'rotem',
+					'open_lightbox' => 'yes',
+					'image_size' => 'rotem2',
+				],
+			],
+			'heading' => [
+				'swiper' => [],
+			],
+		];
+		*/
+		// $widgets_dependencies[ $widget_name ]
+
+		if ( method_exists($this, 'get_dependencies') ) {
+			$dependencies = $this->get_dependencies();
+
+			foreach ( $dependencies as $handle => $conditions ) {
+				echo $widget_name . ' -> handle: ' . $handle . '<br>';
+				if ( wp_script_is( $handle, 'registered' ) && ! wp_script_is( $handle, 'queue' ) ) {
+					if ( is_array( $conditions ) && count( $conditions ) ) {
+						$settings = $this->get_settings_for_display();
+
+						foreach( $conditions as $condition => $value ) {
+							if ( $settings[ $condition ] === $value ) {
+								echo 'TRIGGERING: ' . $handle . '<br>';
+								wp_enqueue_script( $handle );
+								break;
+							}
+						}
+					} else {
+						echo 'TRIGGERING: ' . $handle . '<br>';
+						wp_enqueue_script( $handle );
+					}
+				}
+			}
+		}
 	}
 
 	/**
