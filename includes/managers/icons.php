@@ -220,20 +220,31 @@ class Icons_Manager {
 	 * @return mixed|string
 	 */
 	public static function render_icon( $icon, $attributes = [], $tag = 'i' ) {
+		echo self::get_icon($icon, $attributes, $tag);
+		return true;
+	}
+
+	/**
+	 * Get Icon
+	 *
+	 * Used to get Icon markup for \Elementor\Controls_Manager::ICONS
+	 * @param array $icon             Icon Type, Icon value
+	 * @param array $attributes       Icon HTML Attributes
+	 * @param string $tag             Icon HTML tag, defaults to <i>
+	 *
+	 * @return mixed|string
+	 */
+	public static function get_icon( $icon, $attributes = [], $tag = 'i' ) {
 		if ( empty( $icon['library'] ) ) {
 			return false;
 		}
-		$output = '';
+
 		// handler SVG Icon
 		if ( 'svg' === $icon['library'] ) {
-			$output = self::render_svg_icon( $icon['value'] );
-		} else {
-			$output = self::render_icon_html( $icon, $attributes, $tag );
+			return self::render_svg_icon( $icon['value'] );
 		}
 
-		echo $output;
-
-		return true;
+		return self::render_icon_html( $icon, $attributes, $tag );
 	}
 
 	/**

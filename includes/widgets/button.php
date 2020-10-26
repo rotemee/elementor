@@ -431,26 +431,18 @@ class Widget_Button extends Widget_Base {
 		$this->end_controls_section();
 	}
 
-	/**
-	 * Render button widget output on the frontend.
-	 *
-	 * Written in PHP and used to generate the final HTML.
-	 *
-	 * @since 1.0.0
-	 * @access protected
-	 */
-	protected function render() {
+	protected function get_button_attribute_string() {
 		$settings = $this->get_settings_for_display();
 
-		$this->add_render_attribute( 'wrapper', 'class', 'elementor-button-wrapper' );
+		$this->add_render_attribute( 'button', 'class', 'elementor-button' );
+		$this->add_render_attribute( 'button', 'role', 'button' );
 
 		if ( ! empty( $settings['link']['url'] ) ) {
 			$this->add_link_attributes( 'button', $settings['link'] );
 			$this->add_render_attribute( 'button', 'class', 'elementor-button-link' );
+		} else {
+			$this->add_render_attribute( 'button', 'href', '#' );
 		}
-
-		$this->add_render_attribute( 'button', 'class', 'elementor-button' );
-		$this->add_render_attribute( 'button', 'role', 'button' );
 
 		if ( ! empty( $settings['button_css_id'] ) ) {
 			$this->add_render_attribute( 'button', 'id', $settings['button_css_id'] );
@@ -464,13 +456,83 @@ class Widget_Button extends Widget_Base {
 			$this->add_render_attribute( 'button', 'class', 'elementor-animation-' . $settings['hover_animation'] );
 		}
 
-		?>
-		<div <?php echo $this->get_render_attribute_string( 'wrapper' ); ?>>
-			<a <?php echo $this->get_render_attribute_string( 'button' ); ?>>
-				<?php $this->render_text(); ?>
+		return $this->get_render_attribute_string( 'button' );
+	}
+
+	protected function get_template_data() {
+		$settings = $this->get_settings_for_display();
+
+		$template_data = [
+			'has_icon' => ! empty( $settings['icon'] ) || ! empty( $settings['selected_icon']['value'] ),
+			'text' => ! empty( $settings['text'] ) ? $settings['text'] : false,
+		];
+
+		if ( ! ( $template_data['has_icon'] || $template_data['text'] ) ) {
+			return false;
+		}
+
+		$this->add_render_attribute( 'wrapper', 'class', 'elementor-button-wrapper' );
+		$this->add_render_attribute( 'content-wrapper', 'class', 'elementor-button-content-wrapper' );
+
+		$template_data['wrapper_att'] = $this->get_render_attribute_string( 'wrapper' );
+		$template_data['button_att'] = $this->get_button_attribute_string();
+		$template_data['content_wrapper_att'] = $this->get_render_attribute_string( 'content-wrapper' );
+
+		if ( $template_data['has_icon'] ) {
+			$migrated = isset( $settings['__fa4_migrated']['selected_icon'] );
+			$is_new   = empty( $settings['icon'] ) && Icons_Manager::is_migration_allowed();
+
+			if ( ! $is_new && empty( $settings['icon_align'] ) ) {
+				// @todo: remove when deprecated
+				// added as bc in 2.6
+				//old default
+				$settings['icon_align'] = $this->get_settings( 'icon_align' );
+			}
+
+			$this->add_render_attribute( 'icon-align', 'class', [
+					'elementor-button-icon',
+					'elementor-align-icon-' . $settings['icon_align']
+				] );
+			$template_data['icon_wrapper_att'] = $this->get_render_attribute_string( 'icon-align' );
+			$template_data['icon_element'] = $is_new || $migrated ?
+				Icons_Manager::get_icon( $settings['selected_icon'], [ 'aria-hidden' => 'true' ] ) :
+				'<i class="' . esc_attr( $settings['icon'] ) . '" aria-hidden="true"></i>';
+		}
+
+		if ( $template_data['text'] ) {
+			$this->add_render_attribute( 'text', 'class', 'elementor-button-text' );
+			$this->add_inline_editing_attributes( 'text', 'none' );
+			$template_data['text_render_att'] = $this->get_render_attribute_string( 'text' );
+		}
+
+		return $template_data;
+	}
+
+	/**
+	 * Render button widget output on the frontend.
+	 *
+	 * Written in PHP and used to generate the final HTML.
+	 *
+	 * @since 1.0.0
+	 * @access protected
+	 */
+	protected function render() {
+		$data = $this->get_template_data();
+
+		if ( $data ) { ?>
+		<div <?php echo $data['wrapper_att'] ?>>
+			<a <?php echo $data['button_att'] ?>>
+				<span <?php echo $data['content_wrapper_att'] ?>>
+					<?php if ( $data['has_icon'] ) { ?>
+						<span <?php echo $data['icon_wrapper_att'] ?>><?php echo $data['icon_element'] ?></span>
+					<?php } ?>
+					<?php if ( $data['text'] ) { ?>
+						<span <?php echo $data['text_render_att'] ?>><?php echo $data['text'] ?></span>
+					<?php } ?>
+				</span>
 			</a>
 		</div>
-		<?php
+		<?php }
 	}
 
 	/**
@@ -481,83 +543,99 @@ class Widget_Button extends Widget_Base {
 	 * @since 2.9.0
 	 * @access protected
 	 */
+
+
 	protected function content_template() {
 		?>
 		<#
-		view.addRenderAttribute( 'text', 'class', 'elementor-button-text' );
-		view.addInlineEditingAttributes( 'text', 'none' );
-		var iconHTML = elementor.helpers.renderIcon( view, settings.selected_icon, { 'aria-hidden': true }, 'i' , 'object' ),
-			migrated = elementor.helpers.isIconMigrated( settings, 'selected_icon' );
-		#>
-		<div class="elementor-button-wrapper">
-			<a id="{{ settings.button_css_id }}" class="elementor-button elementor-size-{{ settings.size }} elementor-animation-{{ settings.hover_animation }}" href="{{ settings.link.url }}" role="button">
-				<span class="elementor-button-content-wrapper">
-					<# if ( settings.icon || settings.selected_icon ) { #>
-					<span class="elementor-button-icon elementor-align-icon-{{ settings.icon_align }}">
-						<# if ( ( migrated || ! settings.icon ) && iconHTML.rendered ) { #>
-							{{{ iconHTML.value }}}
-						<# } else { #>
-							<i class="{{ settings.icon }}" aria-hidden="true"></i>
-						<# } #>
-					</span>
+			function get_button_attribute_string() {
+
+				view.addRenderAttribute( 'button', 'class', 'elementor-button' );
+				view.addRenderAttribute( 'button', 'role', 'button' );
+
+				if ( settings.link.url ) {
+					view.addRenderAttribute( 'button', 'href', settings.link.url );
+					view.addRenderAttribute( 'button', 'class', 'elementor-button-link' );
+				} else {
+					view.addRenderAttribute( 'button', 'href', '#' );
+				}
+
+				if ( settings.button_css_id ) {
+					view.addRenderAttribute( 'button', 'id', settings.button_css_id );
+				}
+
+				if ( settings.size ) {
+					view.addRenderAttribute( 'button', 'class', 'elementor-size-' + settings.size );
+				}
+
+				if ( settings.hover_animation ) {
+					view.addRenderAttribute( 'button', 'class', 'elementor-animation-' + settings.hover_animation );
+				}
+
+				return view.getRenderAttributeString( 'button' );
+			}
+
+			function get_template_data() {
+
+				const data = {
+					'has_icon': settings.icon || settings.selected_icon.value,
+					'text': settings.text ? settings.text : false,
+				}
+
+				if ( ! ( data.has_icon || data.text ) ) {
+					return false;
+				}
+
+				view.addRenderAttribute( 'wrapper', 'class', 'elementor-button-wrapper' );
+				view.addRenderAttribute( 'content-wrapper', 'class', 'elementor-button-content-wrapper' );
+
+				data.wrapper_att = view.getRenderAttributeString( 'wrapper' );
+				data.button_att = get_button_attribute_string();
+				data.content_wrapper_att = view.getRenderAttributeString( 'content-wrapper' );
+
+				if ( data.has_icon ) {
+					view.addRenderAttribute( 'icon-align', 'class', [
+						'elementor-button-icon',
+						'elementor-align-icon-' + settings.icon_align
+					] );
+					data.icon_wrapper_att = view.getRenderAttributeString( 'icon-align' );
+
+					const iconHTML = elementor.helpers.renderIcon( view, settings.selected_icon, { 'aria-hidden': true }, 'i' , 'object' ),
+						migrated = elementor.helpers.isIconMigrated( settings, 'selected_icon' );
+
+					if ( iconHTML && iconHTML.rendered && ( ! settings.icon || migrated ) ) {
+						data.icon_element = iconHTML.value;
+					} else {
+						data.icon_element = '<i class="' + settings.icon + '" aria-hidden="true"></i>';
+					}
+				}
+
+				if ( data.text ) {
+					view.addRenderAttribute( 'text', 'class', 'elementor-button-text' );
+					view.addInlineEditingAttributes( 'text', 'none' );
+					data.text_render_att = view.getRenderAttributeString( 'text' );
+				}
+
+				return data;
+			}
+		const data = get_template_data();
+
+		if ( data ) { #>
+
+		<div {{{ data.wrapper_att }}}>
+			<a {{{ data.button_att }}}>
+				<span {{{ data.content_wrapper_att }}}>
+					<# if ( data.has_icon ) { #>
+						<span {{{ data.icon_wrapper_att }}}>{{{ data.icon_element }}}</span>
 					<# } #>
-					<span {{{ view.getRenderAttributeString( 'text' ) }}}>{{{ settings.text }}}</span>
+					<# if ( data.text ) { #>
+						<span {{{ data.text_render_att }}}>{{{ data.text }}}</span>
+					<# } #>
 				</span>
 			</a>
 		</div>
-		<?php
-	}
 
-	/**
-	 * Render button text.
-	 *
-	 * Render button widget text.
-	 *
-	 * @since 1.5.0
-	 * @access protected
-	 */
-	protected function render_text() {
-		$settings = $this->get_settings_for_display();
-
-		$migrated = isset( $settings['__fa4_migrated']['selected_icon'] );
-		$is_new = empty( $settings['icon'] ) && Icons_Manager::is_migration_allowed();
-
-		if ( ! $is_new && empty( $settings['icon_align'] ) ) {
-			// @todo: remove when deprecated
-			// added as bc in 2.6
-			//old default
-			$settings['icon_align'] = $this->get_settings( 'icon_align' );
-		}
-
-		$this->add_render_attribute( [
-			'content-wrapper' => [
-				'class' => 'elementor-button-content-wrapper',
-			],
-			'icon-align' => [
-				'class' => [
-					'elementor-button-icon',
-					'elementor-align-icon-' . $settings['icon_align'],
-				],
-			],
-			'text' => [
-				'class' => 'elementor-button-text',
-			],
-		] );
-
-		$this->add_inline_editing_attributes( 'text', 'none' );
-		?>
-		<span <?php echo $this->get_render_attribute_string( 'content-wrapper' ); ?>>
-			<?php if ( ! empty( $settings['icon'] ) || ! empty( $settings['selected_icon']['value'] ) ) : ?>
-			<span <?php echo $this->get_render_attribute_string( 'icon-align' ); ?>>
-				<?php if ( $is_new || $migrated ) :
-					Icons_Manager::render_icon( $settings['selected_icon'], [ 'aria-hidden' => 'true' ] );
-				else : ?>
-					<i class="<?php echo esc_attr( $settings['icon'] ); ?>" aria-hidden="true"></i>
-				<?php endif; ?>
-			</span>
-			<?php endif; ?>
-			<span <?php echo $this->get_render_attribute_string( 'text' ); ?>><?php echo $settings['text']; ?></span>
-		</span>
+		<# } #>
 		<?php
 	}
 
