@@ -32,7 +32,7 @@ const moduleRules = {
 			],
 		},
 		{
-			test: /\.js$/,
+			test: /\.(js|jsx|mjs)$/,
 			exclude: /node_modules/,
 			use: [
 				{
@@ -45,13 +45,22 @@ const moduleRules = {
 								'pragmaFrag': 'React.Fragment',
 							} ],
 							[ '@babel/plugin-proposal-class-properties' ],
-							[ '@babel/plugin-transform-runtime' ],
+							[ '@babel/plugin-transform-runtime', {
+								"absoluteRuntime": false,
+								//"corejs": false,
+								"helpers": true,
+								"regenerator": true,
+								"useESModules": true,
+							} ],
 							[ '@babel/plugin-transform-modules-commonjs' ],
 							[ '@babel/plugin-proposal-optional-chaining' ],
 						],
 					},
 				},
 			],
+			resolve: {
+				fullySpecified: false,
+			},
 		},
 	],
 };

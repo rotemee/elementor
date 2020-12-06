@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Layout from '../../templates/layout';
 import Notice from '../../ui/notice/notice';
 import DropZone from 'elementor-app/organisms/drop-zone';
+import Button from '@material-ui/core/Button';
 
 import useFile from '../../hooks/use-file/use-file';
 
@@ -18,7 +19,7 @@ export default function Import() {
 	useEffect( () => {
 		if ( isLoading ) {
 			setTimeout( () => {
-				setLoading(false);
+				setLoading( false );
 			}, 5000 );
 		}
 	}, [ isLoading ] );
@@ -39,6 +40,8 @@ export default function Import() {
 				<Notice color="warning" className="kit-content-list__notice">
 					{ __( 'Important: It is strongly recommended that you backup your database before Importing a Kit.', 'elementor' ) }
 				</Notice>
+
+				<Button color="primary">Hello World</Button>
 			</section>
 		</Layout>
 	);
