@@ -109,10 +109,18 @@ export default class Button extends React.Component {
 
 		if ( this.props.url ) {
 			if ( 0 === this.props.url.indexOf( 'http' ) ) {
+				let { variant, color } = this.props;
+
+				if ( ! variant ) {
+					variant = 'text';
+				}
+
 				return (
-					<a href={ this.props.url } target={ this.props.target } { ...attributes }>
-						{ buttonContent }
-					</a>
+					<MuButton variant={ variant } color={ color }>
+						<a href={ this.props.url } target={ this.props.target }>
+							{ buttonContent }
+						</a>
+					</MuButton>
 				);
 			}
 
@@ -136,8 +144,14 @@ export default class Button extends React.Component {
 			);
 		}
 
+		let { variant, color } = this.props;
+
+		if ( ! variant ) {
+			variant = 'text';
+		}
+
 		return (
-			<MuButton { ...attributes }>
+			<MuButton { ...attributes } variant={ variant } color={ color }>
 				{ buttonContent }
 			</MuButton>
 		);
