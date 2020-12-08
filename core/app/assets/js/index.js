@@ -1,5 +1,5 @@
 import App from './app';
-import { Module as SiteEditor } from '@elementor/site-editor';
+import SiteEditor from '../../modules/site-editor/assets/js/module';
 
 new SiteEditor();
 

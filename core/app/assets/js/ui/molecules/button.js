@@ -2,6 +2,8 @@ import { Link, LocationProvider } from '@reach/router';
 import router from '@elementor/router';
 import Icon from 'elementor-app/ui/atoms/icon';
 
+import { default as MuButton } from '@material-ui/core/Button';
+
 import './buttons.scss';
 
 export default class Button extends React.Component {
@@ -135,9 +137,9 @@ export default class Button extends React.Component {
 		}
 
 		return (
-			<div { ...attributes }>
+			<MuButton { ...attributes }>
 				{ buttonContent }
-			</div>
+			</MuButton>
 		);
 	}
 }
