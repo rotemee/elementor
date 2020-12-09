@@ -16,6 +16,9 @@ const StyledButton = withStyles( {
 		height: 48,
 		padding: '0 30px',
 		boxShadow: '0 3px 5px 2px rgba(255, 105, 135, .3)',
+		'&:hover': {
+			background: 'yellow',
+		},
 	},
 	label: {
 		textTransform: 'capitalize',
@@ -32,8 +35,8 @@ export default class Button extends React.Component {
 		className: PropTypes.string,
 		url: PropTypes.string,
 		onClick: PropTypes.func,
-		variant: PropTypes.oneOf( [ 'contained', 'underlined', '' ] ),
-		color: PropTypes.oneOf( [ 'primary', 'secondary', 'cta', 'link', 'disabled' ] ),
+		variant: PropTypes.oneOf( [ 'contained', 'outlined', '' ] ),
+		color: PropTypes.oneOf( [ 'primary', 'secondary', '', 'link' ] ),
 		size: PropTypes.oneOf( [ 'sm', 'md', 'lg' ] ),
 		target: PropTypes.string,
 	};

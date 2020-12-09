@@ -12,6 +12,8 @@ const webpack = require('webpack');
 
 const RemoveChunksPlugin = require('./remove-chunks');
 
+const jsToScss = require( './js-to-scss.js' );
+
 const moduleRules = {
 	rules: [
 		// {
@@ -94,6 +96,10 @@ const externals = {
 };
 
 const plugins = [
+	new jsToScss( {
+		jsSourcePath: '../core/app/assets/eps',
+		scssDestination: '../assets/dev/scss/app/e-style.scss',
+	} ),
 	new webpack.ProvidePlugin( {
 		React: 'react',
 		ReactDOM: 'react-dom',
