@@ -1,5 +1,5 @@
-module.exports = elementorModules.ViewModule.extend( {
-	getDefaultSettings: function() {
+export default class Anchors extends elementorModules.ViewModule {
+	getDefaultSettings() {
 		return {
 			scrollDuration: 500,
 			selectors: {
@@ -8,22 +8,22 @@ module.exports = elementorModules.ViewModule.extend( {
 				scrollable: 'html, body',
 			},
 		};
-	},
+	}
 
-	getDefaultElements: function() {
+	getDefaultElements() {
 		var $ = jQuery,
 			selectors = this.getSettings( 'selectors' );
 
 		return {
 			$scrollable: $( selectors.scrollable ),
 		};
-	},
+	}
 
-	bindEvents: function() {
+	bindEvents() {
 		elementorFrontend.elements.$document.on( 'click', this.getSettings( 'selectors.links' ), this.handleAnchorLinks );
-	},
+	}
 
-	handleAnchorLinks: function( event ) {
+	handleAnchorLinks( event ) {
 		var clickedLink = event.currentTarget,
 			isSamePathname = ( location.pathname === clickedLink.pathname ),
 			isSameHostname = ( location.hostname === clickedLink.hostname ),
@@ -68,11 +68,9 @@ module.exports = elementorModules.ViewModule.extend( {
 		this.elements.$scrollable.animate( {
 			scrollTop: scrollTop,
 		}, this.getSettings( 'scrollDuration' ), 'linear' );
-	},
+	}
 
-	onInit: function() {
-		elementorModules.ViewModule.prototype.onInit.apply( this, arguments );
-
-		this.bindEvents();
-	},
-} );
+	onInit( ...args ) {
+		super.onInit( ...args );
+	}
+}

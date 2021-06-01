@@ -2,7 +2,7 @@ import globalHandler from './handlers/global';
 import sectionHandlers from './handlers/section/section';
 import columnHandlers from './handlers/column';
 
-module.exports = function( $ ) {
+export default function( $ ) {
 	const handlersInstances = {};
 
 	this.elementsHandlers = {
@@ -34,7 +34,7 @@ module.exports = function( $ ) {
 		} );
 	};
 
-	const isClassHandler = ( Handler ) => Handler.prototype.getUniqueHandlerID;
+	const isClassHandler = ( Handler ) => Handler.prototype?.getUniqueHandlerID;
 
 	const addHandlerWithHook = ( elementName, Handler, skin = 'default' ) => {
 		skin = skin ? '.' + skin : '';

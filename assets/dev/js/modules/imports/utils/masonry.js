@@ -1,25 +1,24 @@
 import ViewModule from '../view-module';
 
-module.exports = ViewModule.extend( {
-
-	getDefaultSettings: function() {
+export default class Masonry extends ViewModule {
+	getDefaultSettings() {
 		return {
 			container: null,
 			items: null,
 			columnsCount: 3,
 			verticalSpaceBetween: 30,
 		};
-	},
+	}
 
-	getDefaultElements: function() {
+	getDefaultElements() {
 		return {
 			$container: jQuery( this.getSettings( 'container' ) ),
 			$items: jQuery( this.getSettings( 'items' ) ),
 		};
-	},
+	}
 
-	run: function() {
-		var heights = [],
+	run() {
+		let heights = [],
 			distanceFromTop = this.elements.$container.position().top,
 			settings = this.getSettings(),
 			columnsCount = settings.columnsCount;
@@ -47,5 +46,5 @@ module.exports = ViewModule.extend( {
 				heights.push( itemHeight );
 			}
 		} );
-	},
-} );
+	}
+}

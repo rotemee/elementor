@@ -58,4 +58,8 @@ export default class extends elementorModules.ViewModule {
 	}
 
 	onSettingsChange() {}
+
+	constructor( ...args ) {
+		super( ...args );
+	}
 }

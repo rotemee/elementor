@@ -1,20 +1,16 @@
-module.exports = elementorModules.ViewModule.extend( {
-	$element: null,
-
-	editorListeners: null,
-
-	onElementChange: null,
-
-	onEditSettingsChange: null,
-
-	onPageSettingsChange: null,
-
-	isEdit: null,
-
-	__construct: function( settings ) {
+export default class Base extends elementorModules.ViewModule {
+	__construct( settings ) {
 		if ( ! this.isActive( settings ) ) {
 			return;
 		}
+
+		this.editorListeners = null;
+
+		this.onElementChange = null;
+
+		this.onEditSettingsChange = null;
+
+		this.onPageSettingsChange = null;
 
 		this.$element = settings.$element;
 
@@ -23,21 +19,21 @@ module.exports = elementorModules.ViewModule.extend( {
 		if ( this.isEdit ) {
 			this.addEditorListeners();
 		}
-	},
+	}
 
-	isActive: function() {
+	isActive() {
 		return true;
-	},
+	}
 
-	findElement: function( selector ) {
+	findElement( selector ) {
 		var $mainElement = this.$element;
 
 		return $mainElement.find( selector ).filter( function() {
 			return jQuery( this ).closest( '.elementor-element' ).is( $mainElement );
 		} );
-	},
+	}
 
-	getUniqueHandlerID: function( cid, $element ) {
+	getUniqueHandlerID( cid, $element ) {
 		if ( ! cid ) {
 			cid = this.getModelCID();
 		}
@@ -47,9 +43,9 @@ module.exports = elementorModules.ViewModule.extend( {
 		}
 
 		return cid + $element.attr( 'data-element_type' ) + this.getConstructorID();
-	},
+	}
 
-	initEditorListeners: function() {
+	initEditorListeners() {
 		var self = this;
 
 		self.editorListeners = [
@@ -117,37 +113,37 @@ module.exports = elementorModules.ViewModule.extend( {
 				} );
 			}
 		} );
-	},
+	}
 
-	getEditorListeners: function() {
+	getEditorListeners() {
 		if ( ! this.editorListeners ) {
 			this.initEditorListeners();
 		}
 
 		return this.editorListeners;
-	},
+	}
 
-	addEditorListeners: function() {
+	addEditorListeners() {
 		var uniqueHandlerID = this.getUniqueHandlerID();
 
 		this.getEditorListeners().forEach( function( listener ) {
 			elementorFrontend.addListenerOnce( uniqueHandlerID, listener.event, listener.callback, listener.to );
 		} );
-	},
+	}
 
-	removeEditorListeners: function() {
+	removeEditorListeners() {
 		var uniqueHandlerID = this.getUniqueHandlerID();
 
 		this.getEditorListeners().forEach( function( listener ) {
 			elementorFrontend.removeListeners( uniqueHandlerID, listener.event, null, listener.to );
 		} );
-	},
+	}
 
-	getElementType: function() {
+	getElementType() {
 		return this.$element.data( 'element_type' );
-	},
+	}
 
-	getWidgetType: function() {
+	getWidgetType() {
 		const widgetType = this.$element.data( 'widget_type' );
 
 		if ( ! widgetType ) {
@@ -155,17 +151,17 @@ module.exports = elementorModules.ViewModule.extend( {
 		}
 
 		return widgetType.split( '.' )[ 0 ];
-	},
+	}
 
-	getID: function() {
+	getID() {
 		return this.$element.data( 'id' );
-	},
+	}
 
-	getModelCID: function() {
+	getModelCID() {
 		return this.$element.data( 'model-cid' );
-	},
+	}
 
-	getElementSettings: function( setting ) {
+	getElementSettings( setting ) {
 		let elementSettings = {};
 
 		const modelCID = this.getModelCID();
@@ -208,9 +204,9 @@ module.exports = elementorModules.ViewModule.extend( {
 		}
 
 		return this.getItems( elementSettings, setting );
-	},
+	}
 
-	getEditSettings: function( setting ) {
+	getEditSettings( setting ) {
 		var attributes = {};
 
 		if ( this.isEdit ) {
@@ -218,19 +214,19 @@ module.exports = elementorModules.ViewModule.extend( {
 		}
 
 		return this.getItems( attributes, setting );
-	},
+	}
 
-	getCurrentDeviceSetting: function( settingKey ) {
+	getCurrentDeviceSetting( settingKey ) {
 		return elementorFrontend.getCurrentDeviceSetting( this.getElementSettings(), settingKey );
-	},
+	}
 
-	onInit: function() {
+	onInit() {
 		if ( this.isActive( this.getSettings() ) ) {
 			elementorModules.ViewModule.prototype.onInit.apply( this, arguments );
 		}
-	},
+	}
 
-	onDestroy: function() {
+	onDestroy() {
 		if ( this.isEdit ) {
 			this.removeEditorListeners();
 		}
@@ -238,5 +234,5 @@ module.exports = elementorModules.ViewModule.extend( {
 		if ( this.unbindEvents ) {
 			this.unbindEvents();
 		}
-	},
-} );
+	}
+}

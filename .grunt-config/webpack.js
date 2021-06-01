@@ -66,6 +66,25 @@ const moduleRules = {
 	],
 };
 
+const frontendModuleRules = {
+	rules: [
+		{
+			test: /\.js$/,
+			exclude: /node_modules/,
+			use: [
+				{
+					loader: 'babel-loader',
+					options: {
+						plugins: [
+							[ 'transform-commonjs-es2015-modules' ],
+						],
+					},
+				},
+			],
+		},
+	],
+};
+
 const entry = {
 	'editor': [
 		path.resolve( __dirname, '../assets/dev/js/editor/utils/jquery-serialize-object.js' ),
@@ -117,7 +136,6 @@ const baseConfig = {
 	target: 'web',
 	context: __dirname,
 	externals,
-	module: moduleRules,
 	resolve: aliasList,
 };
 
@@ -139,6 +157,7 @@ const devSharedConfig = {
 const webpackConfig = [
 	{
 		...devSharedConfig,
+		module: moduleRules,
 		plugins: [
 			...plugins,
 		],
@@ -147,6 +166,7 @@ const webpackConfig = [
 	},
 	{
 		...devSharedConfig,
+		module: frontendModuleRules,
 		plugins: [
 			new RemoveChunksPlugin( '.bundle.js' ),
 			...plugins,
@@ -192,6 +212,7 @@ const prodSharedConfig = {
 const webpackProductionConfig = [
 	{
 		...prodSharedConfig,
+		module: moduleRules,
 		plugins: [
 			...plugins,
 		],

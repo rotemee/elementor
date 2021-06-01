@@ -1,46 +1,27 @@
-const Module = function() {
-	const $ = jQuery,
-		instanceParams = arguments,
-		self = this,
-		events = {};
+class Module {
+	getDefaultSettings() {
+		return {};
+	}
 
-	let settings;
+	getConstructorID() {
+		return this.constructor.name;
+	}
 
-	const ensureClosureMethods = function() {
-		$.each( self, function( methodName ) {
-			const oldMethod = self[ methodName ];
+	ensureClosureMethods() {
+		jQuery.each( this, ( methodName ) => {
+			const oldMethod = this[ methodName ];
 
 			if ( 'function' !== typeof oldMethod ) {
 				return;
 			}
 
-			self[ methodName ] = function() {
-				return oldMethod.apply( self, arguments );
+			this[ methodName ] = () => {
+				return oldMethod.apply( this, arguments );
 			};
 		} );
-	};
+	}
 
-	const initSettings = function() {
-		settings = self.getDefaultSettings();
-
-		const instanceSettings = instanceParams[ 0 ];
-
-		if ( instanceSettings ) {
-			$.extend( true, settings, instanceSettings );
-		}
-	};
-
-	const init = function() {
-		self.__construct.apply( self, instanceParams );
-
-		ensureClosureMethods();
-
-		initSettings();
-
-		self.trigger( 'init' );
-	};
-
-	this.getItems = function( items, itemKey ) {
+	getItems( items, itemKey ) {
 		if ( itemKey ) {
 			const keyStack = itemKey.split( '.' ),
 				currentKey = keyStack.splice( 0, 1 );
@@ -57,19 +38,19 @@ const Module = function() {
 		}
 
 		return items;
-	};
+	}
 
-	this.getSettings = function( setting ) {
-		return this.getItems( settings, setting );
-	};
+	getSettings( setting ) {
+		return this.getItems( this.settings, setting );
+	}
 
-	this.setSettings = function( settingKey, value, settingsContainer ) {
+	setSettings( settingKey, value, settingsContainer ) {
 		if ( ! settingsContainer ) {
-			settingsContainer = settings;
+			settingsContainer = this.settings;
 		}
 
 		if ( 'object' === typeof settingKey ) {
-			$.extend( settingsContainer, settingKey );
+			jQuery.extend( settingsContainer, settingKey );
 
 			return self;
 		}
@@ -88,9 +69,9 @@ const Module = function() {
 		}
 
 		return self.setSettings( keyStack.join( '.' ), value, settingsContainer[ currentKey ] );
-	};
+	}
 
-	this.getErrorMessage = function( type, functionName ) {
+	getErrorMessagefunction( type, functionName ) {
 		let message;
 
 		switch ( type ) {
@@ -102,16 +83,16 @@ const Module = function() {
 		}
 
 		return message;
-	};
+	}
 
 	// TODO: This function should be deleted ?.
-	this.forceMethodImplementation = function( functionName ) {
+	forceMethodImplementation( functionName ) {
 		throw new Error( this.getErrorMessage( 'forceMethodImplementation', functionName ) );
-	};
+	}
 
-	this.on = function( eventName, callback ) {
+	on( eventName, callback ) {
 		if ( 'object' === typeof eventName ) {
-			$.each( eventName, function( singleEventName ) {
+			jQuery.each( eventName, function( singleEventName ) {
 				self.on( singleEventName, this );
 			} );
 
@@ -120,41 +101,41 @@ const Module = function() {
 
 		const eventNames = eventName.split( ' ' );
 
-		eventNames.forEach( function( singleEventName ) {
-			if ( ! events[ singleEventName ] ) {
-				events[ singleEventName ] = [];
+		eventNames.forEach( ( singleEventName ) => {
+			if ( ! this.events[ singleEventName ] ) {
+				this.events[ singleEventName ] = [];
 			}
 
-			events[ singleEventName ].push( callback );
+			this.events[ singleEventName ].push( callback );
 		} );
 
 		return self;
-	};
+	}
 
-	this.off = function( eventName, callback ) {
-		if ( ! events[ eventName ] ) {
+	off( eventName, callback ) {
+		if ( ! this.events[ eventName ] ) {
 			return self;
 		}
 
 		if ( ! callback ) {
-			delete events[ eventName ];
+			delete this.events[ eventName ];
 
 			return self;
 		}
 
-		const callbackIndex = events[ eventName ].indexOf( callback );
+		const callbackIndex = this.events[ eventName ].indexOf( callback );
 
 		if ( -1 !== callbackIndex ) {
-			delete events[ eventName ][ callbackIndex ];
+			delete this.events[ eventName ][ callbackIndex ];
 
 			// Reset array index (for next off on same event).
-			events[ eventName ] = events[ eventName ].filter( ( val ) => val );
+			this.events[ eventName ] = this.events[ eventName ].filter( ( val ) => val );
 		}
 
 		return self;
-	};
+	}
 
-	this.trigger = function( eventName ) {
+	trigger( eventName ) {
 		const methodName = 'on' + eventName[ 0 ].toUpperCase() + eventName.slice( 1 ),
 			params = Array.prototype.slice.call( arguments, 1 );
 
@@ -162,43 +143,51 @@ const Module = function() {
 			self[ methodName ].apply( self, params );
 		}
 
-		const callbacks = events[ eventName ];
+		const callbacks = this.events[ eventName ];
 
 		if ( ! callbacks ) {
 			return self;
 		}
 
-		$.each( callbacks, function( index, callback ) {
+		jQuery.each( callbacks, function( index, callback ) {
 			callback.apply( self, params );
 		} );
 
 		return self;
-	};
+	}
 
-	init();
-};
+	onInit() {}
 
-Module.prototype.__construct = function() {};
+	__construct() {}
 
-Module.prototype.getDefaultSettings = function() {
-	return {};
-};
+	constructor( ...args ) {
+		this.__construct( ...args );
 
-Module.prototype.getConstructorID = function() {
-	return this.constructor.name;
-};
+		this.ensureClosureMethods();
 
-Module.extend = function( properties ) {
-	const $ = jQuery,
-		parent = this;
+		const defaultSettings = this.getDefaultSettings();
+
+		this.settings = {
+			...defaultSettings,
+			...args[ 0 ],
+		};
+
+		this.events = {};
+
+		this.onInit( ...args );
+	}
+}
+
+Module.extend = ( properties ) => {
+	const parent = Module;
 
 	const child = function() {
-		return parent.apply( this, arguments );
+		return parent.apply( parent, arguments );
 	};
 
-	$.extend( child, parent );
+	jQuery.extend( child, parent );
 
-	child.prototype = Object.create( $.extend( {}, parent.prototype, properties ) );
+	child.prototype = Object.create( jQuery.extend( {}, parent.prototype, properties ) );
 
 	child.prototype.constructor = child;
 
@@ -207,4 +196,4 @@ Module.extend = function( properties ) {
 	return child;
 };
 
-module.exports = Module;
+export default Module;
