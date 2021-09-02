@@ -14,6 +14,8 @@ import InlineLink from 'elementor-app/ui/molecules/inline-link';
 import Button from 'elementor-app/ui/molecules/button';
 import WizardFooter from 'elementor-app/organisms/wizard-footer';
 
+import { StyledHeading } from 're-styled';
+
 import './export-kit.scss';
 
 export default function ExportKit() {
@@ -21,6 +23,7 @@ export default function ExportKit() {
 		kitInfoTitle = __( 'Kit Information', 'elementor' ),
 		getFooter = () => (
 			<WizardFooter separator justify="end">
+				<StyledHeading variant="h1">{ 'Test' }</StyledHeading>
 				<ExportButton />
 			</WizardFooter>
 		),
