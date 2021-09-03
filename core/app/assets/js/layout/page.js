@@ -26,8 +26,10 @@ export default function Page( props ) {
 		);
 	};
 
+	const isDarkMode = true;
+
 	return (
-		<Theme variants={ { dark: true } }>
+		<Theme variants={ { dark: isDarkMode, light: ! isDarkMode } }>
 			<div className={`eps-app__lightbox ${ props.className }`}>
 				<div className="eps-app">
 					<Header title={ props.title } buttons={ props.headerButtons } titleRedirectRoute={ props.titleRedirectRoute } />

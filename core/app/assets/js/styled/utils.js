@@ -17,13 +17,14 @@ export const bindProps = ( data ) => {
 };
 
 export const getVariant = ( props, style, variant ) => {
-	let variantStyle = style.default.shared || '';
+	let variantStyle = style.root?.shared || '',
+		themeVariants = props.theme.variants;
 
-	variantStyle += style.default.variants[ variant ] || '';
+	variantStyle += style.root?.variants?.[ variant ] || '';
 
-	for ( const key in props.theme.variants ) {
+	for ( const key in themeVariants ) {
 		// e.g: if dark = true.
-		if ( props.theme.variants[ key ] ) {
+		if ( themeVariants[ key ] ) {
 			const themeVariant = style[ key ];
 
 			// If key exist in the style obj.
