@@ -6,3 +6,5 @@ console.log( 'loaded: editor-shell' );
 export function render( element ) {
 	ReactDOM.render( <Editor />, element );
 }
+
+render( document.getElementById( 'elementor-editor-wrapper-v2' ) );

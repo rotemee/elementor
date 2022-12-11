@@ -28,7 +28,7 @@ class Module extends BaseModule {
 
 				$scripts[] = [
 					'handle' => "elementor-$package_name",
-					'src' => "{{ASSETS_URL}}/js/editor-packages/$package_name.js",
+					'src' => ELEMENTOR_URL . "/packages/$package_name/dist/main.js",
 					'deps' => $deps,
 				];
 			}
@@ -64,10 +64,10 @@ class Module extends BaseModule {
 				'name' => 'editor-shell',
 				'deps' => [ 'react', 'react-dom', 'elementor-locations' ],
 			],
-			[
-				'name' => 'top-bar',
-				'deps' => [ 'react', 'elementor-locations', 'elementor-editor-shell' ],
-			],
+//			[
+//				'name' => 'top-bar',
+//				'deps' => [ 'react', 'elementor-locations', 'elementor-editor-shell' ],
+//			],
 		];
 	}
 }
