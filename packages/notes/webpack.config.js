@@ -30,7 +30,11 @@ module.exports = {
 	},
 	plugins: [
 		new ModuleFederationPlugin( {
-			name: 'editorShell',
+			name: 'notes',
+			filename: 'remoteEntry.js',
+			exposes: {
+				'./Notes': './components/Notes',
+			},
 			shared: {
 				react: {
 					import: 'react',

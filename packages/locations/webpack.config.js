@@ -1,13 +1,19 @@
 const ModuleFederationPlugin = require( 'webpack' ).container.ModuleFederationPlugin;
+const path = require( 'path' );
 
 module.exports = {
-	entry: './index',
+	entry: {
+		locations: {
+			import: path.resolve( __dirname, `./index` ),
+			library: {
+				name: [ 'elementorEditorPackages', 'locations' ],
+				type: 'window',
+			},
+		},
+	},
 	mode: 'development',
 	output: {
-		publicPath: 'auto',
-	},
-	externals: {
-		'@elementor/locations': 'elementorEditorPackages.locations',
+		filename: 'main.js',
 	},
 	module: {
 		rules: [
@@ -30,15 +36,10 @@ module.exports = {
 	},
 	plugins: [
 		new ModuleFederationPlugin( {
-			name: 'editorShell',
+			name: 'locations',
 			shared: {
 				react: {
-					import: 'react',
-					shareKey: 'shared-react',
-					shareScope: 'default',
-					strictVersion: true,
-					version: '17.0.2',
-					requiredVersion: '^17.0.2',
+					eager: true,
 				},
 			},
 		} ),

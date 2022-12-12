@@ -4,8 +4,9 @@
 
 	window.elementor.start();
 
-	// TODO: Move to externals and use import.
-	const { render } = window.elementorEditorPackages.editorShell;
+	window.elementorEditorPackages.editorShell.then( ( module ) => {
+		const { render } = module;
 
-	render( document.getElementById( 'elementor-editor-wrapper-v2' ) );
+		render( document.getElementById( 'elementor-editor-wrapper-v2' ) );
+	} );
 } )();

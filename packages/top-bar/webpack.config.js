@@ -1,11 +1,13 @@
 const ModuleFederationPlugin = require( 'webpack' ).container.ModuleFederationPlugin;
-const path = require( 'path' );
 
 module.exports = {
 	entry: './index',
 	mode: 'development',
 	output: {
 		publicPath: 'auto',
+	},
+	externals: {
+		'@elementor/locations': 'elementorEditorPackages.locations',
 	},
 	module: {
 		rules: [
@@ -31,17 +33,16 @@ module.exports = {
 			name: 'topBar',
 			filename: 'remoteEntry.js',
 			exposes: {
-				'./TopBar': './components/top-bar',
+				'./TopBar': './components/TopBar',
 			},
 			shared: {
 				react: {
 					import: 'react',
 					shareKey: 'shared-react',
 					shareScope: 'default',
-					singleton: true,
 					strictVersion: true,
-					version: '17.0.0',
-					requiredVersion: '^17.0.0',
+					version: '17.0.2',
+					requiredVersion: '^17.0.2',
 				},
 			},
 		} ),

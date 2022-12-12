@@ -14,12 +14,17 @@ function System( props ) {
 	return <Component />;
 }
 
-export const Slot = ( { name } ) => {
+// eslint-disable-next-line react/prop-types
+export const Slot = ( { name, children } ) => {
 	const components = useLocation( name );
 
-	return components.map( ( componentConfig, index ) => (
-		<Suspense key={ index } fallback={ null }>
-			<System system={ componentConfig } />
+	if ( children ) {
+		return components.map( ( config ) => children( config ) );
+	}
+
+	return (
+		<Suspense fallback={ null }>
+			{ components.map( ( componentConfig, index ) => <System key={ index } system={ componentConfig } /> ) }
 		</Suspense>
-	) );
+	);
 };
