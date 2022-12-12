@@ -15,11 +15,13 @@ function System( props ) {
 }
 
 // eslint-disable-next-line react/prop-types
-export const Slot = ( { name, children } ) => {
+export const Slot = ( { name, component } ) => {
 	const components = useLocation( name );
 
-	if ( children ) {
-		return components.map( ( config ) => children( config ) );
+	if ( component ) {
+		return components.map( ( config, index ) => (
+			<React.Fragment key={ index }>{ component( config ) }</React.Fragment>
+		) );
 	}
 
 	return (

@@ -18,9 +18,10 @@ export const TopBar = () => {
 					marginLeft: '4px',
 				} }
 			/>
-			<Slot name="editor/top-bar/title">
-				{ ( props ) => <h2>{ props.title }</h2> }
-			</Slot>
+			<Slot
+				name="editor/top-bar/title"
+				component={ ( props ) => <h2>{ props.title }</h2> }
+			/>
 		</div>
 	);
 };
