@@ -5,6 +5,7 @@ module.exports = {
 	mode: 'development',
 	output: {
 		publicPath: 'auto',
+		clean: true,
 	},
 	externals: {
 		'@elementor/locations': 'elementorEditorPackages.locations',

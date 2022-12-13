@@ -14,6 +14,7 @@ module.exports = {
 	mode: 'development',
 	output: {
 		filename: 'main.js',
+		clean: true,
 	},
 	module: {
 		rules: [
@@ -40,6 +41,12 @@ module.exports = {
 			shared: {
 				react: {
 					eager: true,
+					import: 'react',
+					shareKey: 'shared-react',
+					shareScope: 'default',
+					strictVersion: true,
+					version: '17.0.2',
+					requiredVersion: '^17.0.2',
 				},
 			},
 		} ),
