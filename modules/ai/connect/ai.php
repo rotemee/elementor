@@ -10,6 +10,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Ai extends Library {
 	const API_URL = 'https://my.elementor.com/api/v2/ai/';
 
+	const STYLE_PRESET = 'style_preset';
+	const IMAGE_TYPE = 'image_type';
+	const IMAGE_STRENGTH = 'image_strength';
+	const ASPECT_RATIO = 'ratio';
+	const PROMPT = 'prompt';
+
 	public function get_title() {
 		return esc_html__( 'AI', 'elementor' );
 	}
@@ -118,6 +124,52 @@ class Ai extends Library {
 				'site_lang' => get_bloginfo( 'language' ),
 			]
 		);
+	}
+
+	public function get_text_to_image( $prompt, $prompt_settings ) {
+		return $this->ai_request(
+			'POST',
+			'image/text-to-image',
+			[
+				self::PROMPT => $prompt,
+				self::IMAGE_TYPE => $prompt_settings[ self::IMAGE_TYPE ] . '/' . $prompt_settings[ self::STYLE_PRESET ],
+				self::ASPECT_RATIO => $prompt_settings[ self::ASPECT_RATIO ],
+				'api_version' => ELEMENTOR_VERSION,
+				'site_lang' => get_bloginfo( 'language' ),
+			]
+		);
+	}
+
+	/**
+	 * get_image_to_image
+	 * @param $image_data
+	 *
+	 * @return mixed|\WP_Error
+	 * @throws \Exception
+	 */
+	public function get_image_to_image( $image_data ) {
+		$image_file = get_attached_file( $image_data['attachment_id'] );
+
+		if ( ! $image_file ) {
+			throw new \Exception( 'Image file not found' );
+		}
+
+		$result = $this->ai_request(
+			'POST',
+			'image/image-to-image',
+			[
+				self::PROMPT => $image_data[ self::PROMPT ],
+				self::IMAGE_TYPE => $image_data['promptSettings'][ self::IMAGE_TYPE ] . '/' . $image_data['promptSettings'][ self::STYLE_PRESET ],
+				self::IMAGE_STRENGTH => $image_data['promptSettings'][ self::IMAGE_STRENGTH ],
+				self::ASPECT_RATIO => $image_data['promptSettings'][ self::ASPECT_RATIO ],
+				'api_version' => ELEMENTOR_VERSION,
+				'site_lang' => get_bloginfo( 'language' ),
+			],
+			$image_file,
+			'image'
+		);
+
+		return $result;
 	}
 
 	protected function init() {}

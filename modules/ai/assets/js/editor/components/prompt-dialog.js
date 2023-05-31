@@ -7,21 +7,22 @@ const PromptDialog = ( props ) => {
 		<Draggable handle=".MuiDialogTitle-root" cancel={ '[class*="MuiDialogContent-root"]' }>
 			<Dialog
 				open={ true }
-				onClose={ props.onClose }
 				fullWidth={ true }
 				hideBackdrop={ true }
-				maxWidth="sm"
+				scroll="paper"
 				sx={ {
 					'& .MuiDialog-container': {
 						alignItems: 'flex-start',
-						mt: '17vh',
+						mt: '18vh',
 					},
 				} }
 				PaperProps={ {
 					sx: {
-						maxHeight: '72vh',
+						m: 0,
+						maxHeight: '76vh',
 					},
 				} }
+				{ ...props }
 			>
 				<DialogHeader onClose={ props.onClose }>
 					{ props.headerAction }
