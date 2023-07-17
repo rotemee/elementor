@@ -5,6 +5,7 @@ import DateTimeControl from 'elementor-controls/date-time';
 import EditorDocuments from './components/documents/component';
 import environment from 'elementor-common/utils/environment';
 import ElementsManager from './elements/manager';
+import IntroductionTooltipsManager from './introduction-tooltips/manager';
 import Favorites from 'elementor/modules/favorites/assets/js/editor/module';
 import HistoryManager from 'elementor/modules/history/assets/js/module';
 import HotkeysScreen from './components/hotkeys/hotkeys';
@@ -18,7 +19,6 @@ import Navigator from './regions/navigator/navigator';
 import NoticeBar from './utils/notice-bar';
 import Preview from 'elementor-views/preview';
 import PopoverToggleControl from 'elementor-controls/popover-toggle';
-import ResponsiveBar from './regions/responsive-bar/responsive-bar';
 import Selection from './components/selection/manager';
 import LandingPageLibraryModule from 'elementor/modules/landing-pages/assets/js/editor/module';
 import ElementsColorPicker from 'elementor/modules/elements-color-picker/assets/js/editor/module';
@@ -77,9 +77,13 @@ export default class EditorBase extends Marionette.Application {
 	}
 
 	backgroundClickListeners = {
+		tooltip: {
+			element: '.dialog-tooltip-widget',
+			ignore: '.dialog-widget, .elementor-controls-popover, .pcr-selection',
+		},
 		popover: {
 			element: '.elementor-controls-popover',
-			ignore: '.elementor-control-popover-toggle-toggle, .elementor-control-popover-toggle-toggle-label, .select2-container, .pcr-app',
+			ignore: '.elementor-control-popover-toggle-toggle, .elementor-control-popover-toggle-toggle-label, .select2-container, .pcr-app, .dialog-tooltip-widget',
 		},
 		globalControlsSelect: {
 			element: '.e-global__popover',
@@ -93,13 +97,19 @@ export default class EditorBase extends Marionette.Application {
 			element: '.elementor-panel-footer-tool.elementor-toggle-state',
 			ignore: '.elementor-panel-footer-tool.elementor-toggle-state, #elementor-panel-saver-button-publish-label',
 			callback: ( $elementsToHide ) => {
-				$elementsToHide.removeClass( 'elementor-open' );
+				$elementsToHide.removeClass( 'e-open' );
 			},
 		},
 		panelResponsiveSwitchers: {
 			element: '.elementor-control-responsive-switchers',
 			callback: ( $elementsToHide ) => {
 				$elementsToHide.removeClass( 'elementor-responsive-switchers-open' );
+			},
+		},
+		panelUnitControlSwitchers: {
+			element: '.e-units-choices',
+			callback: ( $elementsToHide ) => {
+				$elementsToHide.removeClass( 'e-units-choices-open' );
 			},
 		},
 		promotion: {
@@ -165,6 +175,7 @@ export default class EditorBase extends Marionette.Application {
 			Dimensions: require( 'elementor-controls/dimensions' ),
 			Exit_animation: require( 'elementor-controls/select2' ),
 			Font: require( 'elementor-controls/font' ),
+			Gaps: require( 'elementor-controls/gaps' ),
 			Gallery: require( 'elementor-controls/gallery' ),
 			Hidden: require( 'elementor-controls/hidden' ),
 			Hover_animation: require( 'elementor-controls/select2' ),
@@ -173,7 +184,6 @@ export default class EditorBase extends Marionette.Application {
 			Image_dimensions: require( 'elementor-controls/image-dimensions' ),
 			Media: require( 'elementor-controls/media' ),
 			Number: require( 'elementor-controls/number' ),
-			Order: require( 'elementor-controls/order' ),
 			Popover_toggle: PopoverToggleControl,
 			Repeater: require( 'elementor-controls/repeater' ),
 			RepeaterRow: require( 'elementor-controls/repeater-row' ),
@@ -348,7 +358,7 @@ export default class EditorBase extends Marionette.Application {
 		const EventManager = require( 'elementor-utils/hooks' ),
 			DynamicTags = require( 'elementor-dynamic-tags/manager' ),
 			Settings = require( 'elementor-editor/components/settings/settings' ),
-			Notifications = require( 'elementor-editor-utils/notifications' );
+			Notifications = require( 'elementor-utils/notifications' );
 
 		this.elementsManager = new ElementsManager();
 
@@ -372,15 +382,15 @@ export default class EditorBase extends Marionette.Application {
 
 		this.noticeBar = new NoticeBar();
 
-		if ( elementorCommon.config.experimentalFeatures[ 'favorite-widgets' ] ) {
-			this.favorites = new Favorites();
-		}
+		this.favorites = new Favorites();
 
 		this.history = new HistoryManager();
 
 		this.promotion = new Promotion();
 
 		this.browserImport = new BrowserImport();
+
+		this.introductionTooltips = new IntroductionTooltipsManager();
 
 		this.documents = $e.components.register( new EditorDocuments() );
 
@@ -389,9 +399,7 @@ export default class EditorBase extends Marionette.Application {
 			this.modules.landingLibraryPageModule = new LandingPageLibraryModule();
 		}
 
-		if ( elementorCommon.config.experimentalFeatures[ 'elements-color-picker' ] ) {
-			this.modules.elementsColorPicker = new ElementsColorPicker();
-		}
+		this.modules.elementsColorPicker = new ElementsColorPicker();
 
 		// TODO: Move to elementor:init-data-components
 		$e.components.register( new DataGlobalsComponent() );
@@ -561,17 +569,6 @@ export default class EditorBase extends Marionette.Application {
 		this.addRegions( { panel: require( 'elementor-regions/panel/panel' ) } );
 
 		this.trigger( 'panel:init' );
-	}
-
-	initResponsiveBar() {
-		this.addRegions( {
-			responsiveBar: {
-				el: '#elementor-responsive-bar',
-				regionClass: ResponsiveBar,
-			},
-		} );
-
-		this.trigger( 'responsiveBar:init' );
 	}
 
 	initNavigator() {
@@ -992,6 +989,13 @@ export default class EditorBase extends Marionette.Application {
 		} else if ( 'desktop' !== newDeviceMode ) {
 			this.enterDeviceMode();
 		}
+
+		dispatchEvent( new CustomEvent( 'elementor/device-mode/change', {
+			detail: {
+				activeMode: newDeviceMode,
+
+			},
+		} ) );
 	}
 
 	translate( stringKey, templateArgs, i18nStack ) {
@@ -1107,6 +1111,8 @@ export default class EditorBase extends Marionette.Application {
 			this.generateResponsiveControlsForElements();
 		}
 
+		this.elementsManager = new ElementsManager();
+
 		this.initComponents();
 
 		if ( ! this.checkEnvCompatibility() ) {
@@ -1198,13 +1204,17 @@ export default class EditorBase extends Marionette.Application {
 	onFirstPreviewLoaded() {
 		this.initPanel();
 
-		this.initResponsiveBar();
-
 		this.previewLoadedOnce = true;
 	}
 
 	onEditModeSwitched() {
 		const activeMode = this.channels.dataEditMode.request( 'activeMode' );
+
+		dispatchEvent( new CustomEvent( 'elementor/edit-mode/change', {
+			detail: {
+				activeMode,
+			},
+		} ) );
 
 		if ( 'edit' === activeMode ) {
 			this.exitPreviewMode();
